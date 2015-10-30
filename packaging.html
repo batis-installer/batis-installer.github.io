@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Packaging an application using Batis &mdash; Batis 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Batis 0.1 documentation" href="index.html" />
+    <link rel="next" title="What Batis is not" href="whatitsnot.html" />
+    <link rel="prev" title="Why distribute applications using Batis?" href="whybatis.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="packaging-an-application-using-batis">
+<h1>Packaging an application using Batis<a class="headerlink" href="#packaging-an-application-using-batis" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This describes how to work directly with Batis to distribute an application.
+I hope that higher level tools will offer simpler ways to do this in the
+future.</p>
+</div>
+<ol class="arabic">
+<li><p class="first">Prepare a directory containing your built application, so that it can run
+regardless of where the directory is located (i.e. everything inside the
+application is loaded by relative paths).</p>
+</li>
+<li><p class="first">Add a <code class="file docutils literal"><span class="pre">batis_info</span></code> subdirectory in the top level of this application
+directory. This should contain:</p>
+<ul>
+<li><p class="first"><code class="file docutils literal"><span class="pre">metadata.json</span></code> - a JSON object containing information about your
+application, including:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">name</span></code> - the human readable name of your application.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">byline</span></code> - a very brief description of your application, which may be
+displayed by installers.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">icon</span></code> - the relative path to an icon file within your application
+directory. This may be displayed by graphical installers.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">commands</span></code> - list of objects, each with &#8216;name&#8217; and &#8216;target&#8217; keys.
+<code class="docutils literal"><span class="pre">target</span></code>, a path relative to the root of your application directory,
+will be symlinked as <code class="docutils literal"><span class="pre">name</span></code> to a location on <span class="target" id="index-0"></span><code class="xref std std-envvar docutils literal"><span class="pre">PATH</span></code>. E.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;commands&quot;: [{&quot;target&quot;: &quot;bin/launch.sh&quot;, &quot;name&quot;: &quot;myapp&quot;}]
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p class="first"><code class="file docutils literal"><span class="pre">dependencies.json</span></code> - optional, a JSON object with details about
+external packages that need to be installed for you application. See
+<a class="reference internal" href="#dependencies"><span>Dependencies</span></a> for more details.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">system_packages</span></code> - a specification of distro packages that the user
+must have installed. See <a class="reference internal" href="#dependencies"><span>Dependencies</span></a> for details.</li>
+<li><code class="docutils literal"><span class="pre">description</span></code> - a string listing the same distro
+packages in human-readable form. This will be shown to the user if Batis
+can&#8217;t automatically install the dependencies. E.g. for a PyQt application,
+this could be <code class="docutils literal"><span class="pre">&quot;Python</span> <span class="pre">3,</span> <span class="pre">PyQt5&quot;</span></code>.</li>
+</ul>
+</li>
+<li><p class="first"><code class="file docutils literal"><span class="pre">desktop/*.desktop</span></code> - Zero to many desktop entry files
+(<a class="reference external" href="http://standards.freedesktop.org/desktop-entry-spec/latest/">spec</a>).
+These can add your application to desktop menus or launchers, and associate
+it with given mime types. You can use <code class="docutils literal"><span class="pre">{{INSTALL_DIR}}</span></code> inside these to
+refer to your application&#8217;s directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Exec</span><span class="o">=</span><span class="s">&quot;{{INSTALL_DIR}}/bin/foo&quot;</span> <span class="o">%</span><span class="n">F</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="file docutils literal"><span class="pre">mime/*.xml</span></code> - Zero to many mime database XML source files
+(<a class="reference external" href="http://standards.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-latest.html#idm140625833214912">spec</a>,
+<a class="reference external" href="http://www.freedesktop.org/wiki/Specifications/AddingMIMETutor/">tutorial</a>).
+These can define new file types for your application.</p>
+</li>
+<li><p class="first"><code class="file docutils literal"><span class="pre">icons/</span><em><span class="pre">theme</span></em><span class="pre">/</span><em><span class="pre">size</span></em><span class="pre">x</span><em><span class="pre">size</span></em><span class="pre">/</span><em><span class="pre">category</span></em><span class="pre">/</span><em><span class="pre">name</span></em><span class="pre">.png</span></code> - icons for your
+application and new mime types. Theme will normally be &#8216;hicolor&#8217;, which
+is used as the fallback theme, and you should include hicolor variants
+in addition to any other theme you want to add icons for. You should
+install at least a 48x48 pixel icon; other square sizes are optional.
+Category will typically be either &#8216;apps&#8217; or &#8216;mimetype&#8217;.
+(<a class="reference external" href="http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html">Icon theme spec</a>)</p>
+</li>
+</ul>
+</li>
+<li><p class="first">Use <code class="docutils literal"><span class="pre">batis</span> <span class="pre">verify</span></code> to check that all the necessary information is in
+place:</p>
+<div class="highlight-python"><div class="highlight"><pre>batis verify path/to/app_directory
+</pre></div>
+</div>
+<p>Fix any problems that this reports.</p>
+</li>
+<li><p class="first">Pack the directory into a tarball:</p>
+<div class="highlight-python"><div class="highlight"><pre>batis pack path/to/app_directory -n myapp -o myapp-0.1.app.tgz
+</pre></div>
+</div>
+<p>This makes a gzipped tarball of the directory you&#8217;re using, and adds an
+<code class="docutils literal"><span class="pre">install.sh</span></code> script, along with the necessary Batis files, so that users
+without Batis can easily install your application. Upload the tarball
+somewhere publicly accessible.</p>
+</li>
+<li><p class="first">Prepare a <a class="reference internal" href="#build-index"><span>build index file</span></a>, and add it to your project&#8217;s
+website as <code class="docutils literal"><span class="pre">/batis_index.json</span></code>.</p>
+</li>
+</ol>
+<p>You can now invite users with Batis to install your application by running:</p>
+<div class="highlight-python"><div class="highlight"><pre>batis install example.com/myapp/
+</pre></div>
+</div>
+<p>For users without Batis installed, provide links directly to the tarballs, and
+instructions to download, un-tar and run <code class="docutils literal"><span class="pre">./install.sh</span></code>.</p>
+<div class="section" id="dependencies">
+<span id="id1"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Dependencies are third party code or resources that your application uses. Batis
+lets you choose whether to bundle dependencies inside your tarball, or specify
+that they should be installed by a system package manager. Each has advantages:</p>
+<ul class="simple">
+<li>Bundled dependencies isolate you from API changes in your dependency, because
+the version your code uses is fixed until you decide to update it.</li>
+<li>Separately installed dependencies mean your users can benefit from security
+and performance improvements in the dependencies without you needing to make a
+new release. It also means your tarball is smaller.</li>
+</ul>
+<p>In general, I recommend that you specify only large, stable dependencies - such
+as Python, Java or Qt - for external installation.</p>
+<p>Different distributions use different naming schemes for packages, so the
+<code class="docutils literal"><span class="pre">system_packages</span></code> field in dependencies.json is a list of possible specifications,
+allowing Batis to choose one suited to the user&#8217;s distribution. For instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s">&quot;package_manager&quot;</span><span class="p">:</span> <span class="s">&quot;apt-get&quot;</span><span class="p">,</span>
+        <span class="s">&quot;packages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;python3&quot;</span><span class="p">,</span> <span class="s">&quot;python3-pyqt5&quot;</span><span class="p">,</span> <span class="s">&quot;python3-pyqt5.qtsvg&quot;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s">&quot;package_manager&quot;</span><span class="p">:</span> <span class="s">&quot;yum&quot;</span><span class="p">,</span>
+        <span class="s">&quot;packages&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;python3&quot;</span><span class="p">,</span> <span class="s">&quot;python3-qt5&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Each specification has either a <code class="docutils literal"><span class="pre">package_manager</span></code> field or a
+<code class="docutils literal"><span class="pre">distribution</span></code> field. Use <code class="docutils literal"><span class="pre">package_manager</span></code> where possible, because it&#8217;s
+less specific: <code class="docutils literal"><span class="pre">&quot;package_manager&quot;:</span> <span class="pre">&quot;apt-get&quot;</span></code> will work on Debian,
+Ubuntu, Linux Mint, and many other derivatives. Batis recognises these
+package managers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">apt</span><span class="o">-</span><span class="n">get</span><span class="p">,</span> <span class="n">yum</span><span class="p">,</span> <span class="n">zypper</span><span class="p">,</span> <span class="n">urpmi</span><span class="p">,</span> <span class="n">pacman</span><span class="p">,</span> <span class="n">sbopkg</span><span class="p">,</span> <span class="n">equo</span><span class="p">,</span> <span class="n">emerge</span>
+</pre></div>
+</div>
+<p>If you need to do something different for a specific distribution, run
+<code class="docutils literal"><span class="pre">lsb_release</span> <span class="pre">-i</span></code> to find the name to use. Put it before the more general
+specification in the list; Batis will use the first one that matches when
+installing.</p>
+<p>The user will be prompted for their password for sudo access to install the
+necessary system packages.</p>
+<p>If no specification matches, or installing the system packages fails, Batis
+will ask the user to ensure the dependencies are installed. It uses the
+<code class="docutils literal"><span class="pre">description</span></code> field in <code class="docutils literal"><span class="pre">dependencies.json</span></code> for this.</p>
+<p>If your package doesn&#8217;t require any system packages, you can leave the
+<code class="docutils literal"><span class="pre">dependencies.json</span></code> file out.</p>
+</div>
+<div class="section" id="the-builds-index">
+<span id="build-index"></span><h2>The builds index<a class="headerlink" href="#the-builds-index" title="Permalink to this headline">¶</a></h2>
+<p>When users install an application using a URL, Batis looks for an index
+file called <code class="docutils literal"><span class="pre">batis_index.json</span></code>. For example, to let users
+<code class="docutils literal"><span class="pre">batis</span> <span class="pre">install</span> <span class="pre">https://example.com/</span></code>, you would put the index at:</p>
+<div class="highlight-python"><div class="highlight"><pre>https://example.com/batis_index.json
+</pre></div>
+</div>
+<p>The index file must be available over HTTPS. Hosting your website on
+<a class="reference external" href="https://pages.github.com/">Github Pages</a> is one easy and free way to support
+HTTPS.</p>
+<p>The index should be JSON, looking like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;My App&quot;</span><span class="p">,</span>
+  <span class="s">&quot;builds&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;url&quot;</span><span class="p">:</span> <span class="s">&quot;https://example.com/downloads/myapp_0.1_linux_64bit.app.tar.gz&quot;</span><span class="p">,</span>
+      <span class="s">&quot;sha512&quot;</span><span class="p">:</span> <span class="s">&quot;48157035840[...]bd4a14146b9&quot;</span><span class="p">,</span>
+      <span class="s">&quot;version&quot;</span><span class="p">:</span> <span class="s">&quot;0.1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;kernel&quot;</span><span class="p">:</span> <span class="s">&quot;Linux&quot;</span><span class="p">,</span>
+      <span class="s">&quot;arch&quot;</span><span class="p">:</span> <span class="s">&quot;x86_64&quot;</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="topic">
+<p class="topic-title first">Checking your index</p>
+<p>When you create or update your index, check that it has the necessary
+information by running:</p>
+<div class="highlight-python"><div class="highlight"><pre>batis verify-index &lt;path_or_url&gt;
+</pre></div>
+</div>
+</div>
+<p>Batis will select an appropriate build for the user&#8217;s system based on the
+<code class="docutils literal"><span class="pre">kernel</span></code> and <code class="docutils literal"><span class="pre">arch</span></code> fields. These should match the results of <code class="docutils literal"><span class="pre">uname</span> <span class="pre">-s</span></code>
+and <code class="docutils literal"><span class="pre">uname</span> <span class="pre">-m</span></code> respectively, and are not case sensitive. As a special case,
+<code class="docutils literal"><span class="pre">&quot;arch&quot;:</span> <span class="pre">&quot;x86&quot;</span></code> will match <code class="docutils literal"><span class="pre">i386</span></code>, <code class="docutils literal"><span class="pre">i686</span></code>, and any <code class="docutils literal"><span class="pre">i&lt;N&gt;86</span></code>.</p>
+<p>If your application doesn&#8217;t need separate builds for different kernels or
+architectures—for instance, if it only contains Python code with no C extensions
+—you can set these fields to &#8220;any&#8221;, or omit them entirely.</p>
+<p>If there are multiple suitable builds, Batis will take the one with the highest
+version number. The version number should contain one or more numeric parts,
+separated by non-numeric characters such as <code class="docutils literal"><span class="pre">.</span></code>. Batis ignores any non-numeric
+parts. You can use negative numbers for pre-releases (e.g. <code class="docutils literal"><span class="pre">2.0.-1.3</span></code>).</p>
+<p>The preferred build will be downloaded from the URL given. HTTP URLs are allowed
+here, but they must have a hash.</p>
+<p>The <code class="docutils literal"><span class="pre">sha512</span></code> field is recommended if you specify an https URL, and mandatory
+for http. If provided, it must match the SHA-512 hash of the tarball available
+for download.</p>
+<div class="topic">
+<p class="topic-title first">Future extensions</p>
+<p>Future versions of Batis may use extra fields in the index to download
+incremental upgrades, smaller packages containing just the differences
+between two versions of the application.
+The index could also contain information for downloading tarballs using
+peer-to-peer mechanisms like IPFS or BitTorrent.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Packaging an application using Batis</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#the-builds-index">The builds index</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="whybatis.html" title="previous chapter">Why distribute applications using Batis?</a></li>
+      <li>Next: <a href="whatitsnot.html" title="next chapter">What Batis is not</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/packaging.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Thomas Kluyver.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/packaging.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
