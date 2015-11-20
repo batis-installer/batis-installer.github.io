@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing applications &mdash; Batis 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Batis 0.1 documentation" href="index.html" />
+    <link rel="next" title="Packaging an application" href="packaging.html" />
+    <link rel="prev" title="Installing Batis" href="install-batis.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installing-applications">
+<h1>Installing applications<a class="headerlink" href="#installing-applications" title="Permalink to this headline">¶</a></h1>
+<p>With Batis installed, you can install applications by clicking a link on the
+application&#8217;s webpage. For example: <a class="reference external" href="batis://batis-installer.github.io/example-apps/pyqt/batis_index.json">install a sample application</a>.</p>
+<p>If you prefer to use the command line, copy the URL from the link (it will begin
+with <code class="docutils literal"><span class="pre">batis://</span></code>), and run:</p>
+<div class="highlight-python"><div class="highlight"><pre>batis install batis://...
+</pre></div>
+</div>
+<p>You can also install an application packaged with Batis by unpacking the tarball
+and running the <code class="docutils literal"><span class="pre">install.sh</span></code> file inside it, whether or not you have Batis
+installed.</p>
+<div class="section" id="uninstalling-applications">
+<h2>Uninstalling applications<a class="headerlink" href="#uninstalling-applications" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>batis uninstall &lt;name&gt;
+</pre></div>
+</div>
+<p>Run <code class="docutils literal"><span class="pre">batis</span> <span class="pre">list</span></code> to see the names of installed applications.</p>
+</div>
+<div class="section" id="adapting-applications-not-packaged-with-batis">
+<h2>Adapting applications not packaged with Batis<a class="headerlink" href="#adapting-applications-not-packaged-with-batis" title="Permalink to this headline">¶</a></h2>
+<p>It may be possible to install an application with Batis even if the developers
+didn&#8217;t package it for that. This can add launcher entries and file associations
+which would otherwise need to be set up manually. It also gives you a standard
+way to uninstall applications.</p>
+<p>Adapters for suitable applications are being collected in the
+<a class="reference external" href="https://github.com/batis-installer/batis-adapt">batis-adapt repository</a>.
+See if there&#8217;s already an adapter for the application you want, and if not,
+consider adding one.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/batis-logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">Batis</h2>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install-batis.html">Installing Batis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installing applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#uninstalling-applications">Uninstalling applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adapting-applications-not-packaged-with-batis">Adapting applications not packaged with Batis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging an application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQs</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install-batis.html" title="previous chapter">Installing Batis</a></li>
+      <li>Next: <a href="packaging.html" title="next chapter">Packaging an application</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Thomas Kluyver.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/installing.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

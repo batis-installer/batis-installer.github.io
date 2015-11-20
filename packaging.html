@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Packaging an application using Batis &mdash; Batis 0.1 documentation</title>
+    <title>Packaging an application &mdash; Batis 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Batis 0.1 documentation" href="index.html" />
-    <link rel="next" title="What Batis is not" href="whatitsnot.html" />
-    <link rel="prev" title="Why distribute applications using Batis?" href="whybatis.html" />
+    <link rel="next" title="FAQs" href="faq.html" />
+    <link rel="prev" title="Installing applications" href="installing.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -38,14 +38,15 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="packaging-an-application-using-batis">
-<h1>Packaging an application using Batis<a class="headerlink" href="#packaging-an-application-using-batis" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This describes how to work directly with Batis to distribute an application.
-I hope that higher level tools will offer simpler ways to do this in the
-future.</p>
+  <div class="section" id="packaging-an-application">
+<h1>Packaging an application<a class="headerlink" href="#packaging-an-application" title="Permalink to this headline">¶</a></h1>
+<div class="topic">
+<p class="topic-title first">Packaging examples</p>
+<p>There are <a class="reference external" href="https://batis-installer.github.io/example-apps/">example applications</a>
+showing how to use Batis with popular technologies like Electron or PyQt.</p>
 </div>
+<p>You&#8217;ve got your application running smoothly, and you&#8217;re ready to invite other
+people to use it. Here&#8217;s how to package it from scratch using Batis:</p>
 <ol class="arabic">
 <li><p class="first">Prepare a directory containing your built application, so that it can run
 regardless of where the directory is located (i.e. everything inside the
@@ -57,13 +58,18 @@ directory. This should contain:</p>
 <li><p class="first"><code class="file docutils literal"><span class="pre">metadata.json</span></code> - a JSON object containing information about your
 application, including:</p>
 <ul>
-<li><p class="first"><code class="docutils literal"><span class="pre">name</span></code> - the human readable name of your application.</p>
+<li><p class="first"><code class="docutils literal"><span class="pre">name</span></code> and <code class="docutils literal"><span class="pre">byline</span></code> - brief, human readable information about the
+application, which may be displayed by tools for managing applications.</p>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">byline</span></code> - a very brief description of your application, which may be
-displayed by installers.</p>
+<li><p class="first"><code class="docutils literal"><span class="pre">icon_name</span></code> <em>or</em> <code class="docutils literal"><span class="pre">icon_file</span></code> - an icon for your application, which tools
+for managing applications may display. <code class="docutils literal"><span class="pre">icon_name</span></code>, which is preferred,
+identifies an icon from the <code class="docutils literal"><span class="pre">batis_info/icons</span></code> directory described below.
+<code class="docutils literal"><span class="pre">icon_file</span></code> is a relative path to an icon file within the application
+directory.</p>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">icon</span></code> - the relative path to an icon file within your application
-directory. This may be displayed by graphical installers.</p>
+<li><p class="first"><code class="docutils literal"><span class="pre">index_url</span></code> - the URL of the application&#8217;s <a class="reference internal" href="#index-file"><span>index file</span></a>.
+Future versions of Batis will use this to look for application updates.
+Optional but strongly recommended.</p>
 </li>
 <li><p class="first"><code class="docutils literal"><span class="pre">commands</span></code> - list of objects, each with &#8216;name&#8217; and &#8216;target&#8217; keys.
 <code class="docutils literal"><span class="pre">target</span></code>, a path relative to the root of your application directory,
@@ -71,6 +77,11 @@ will be symlinked as <code class="docutils literal"><span class="pre">name</span
 <div class="highlight-python"><div class="highlight"><pre>&quot;commands&quot;: [{&quot;target&quot;: &quot;bin/launch.sh&quot;, &quot;name&quot;: &quot;myapp&quot;}]
 </pre></div>
 </div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">format_version</span></code> - <code class="docutils literal"><span class="pre">[1,</span> <span class="pre">0]</span></code> with the details described in this
+document. Future releases may increment the second number for backwards
+compatible changes to the package format, and the first for incompatible
+changes.</p>
 </li>
 </ul>
 </li>
@@ -126,12 +137,15 @@ place:</p>
 without Batis can easily install your application. Upload the tarball
 somewhere publicly accessible.</p>
 </li>
-<li><p class="first">Prepare a <a class="reference internal" href="#build-index"><span>build index file</span></a>, and add it to your project&#8217;s
-website as <code class="docutils literal"><span class="pre">/batis_index.json</span></code>.</p>
+<li><p class="first">Prepare a <a class="reference internal" href="#index-file"><span>build index file</span></a>, and make it accessible on the
+web over HTTPS.</p>
 </li>
 </ol>
-<p>You can now invite users with Batis to install your application by running:</p>
-<div class="highlight-python"><div class="highlight"><pre>batis install example.com/myapp/
+<p>You can now invite users with Batis to install your application using a link to
+the index file, replacing <code class="docutils literal"><span class="pre">https://</span></code> with <code class="docutils literal"><span class="pre">batis://</span></code>. For instance:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">&quot;batis://example.com/myapp/batis_index.json&quot;</span><span class="nt">&gt;</span>
+    Click to install
+<span class="nt">&lt;/a&gt;</span>
 </pre></div>
 </div>
 <p>For users without Batis installed, provide links directly to the tarballs, and
@@ -185,20 +199,20 @@ will ask the user to ensure the dependencies are installed. It uses the
 <p>If your package doesn&#8217;t require any system packages, you can leave the
 <code class="docutils literal"><span class="pre">dependencies.json</span></code> file out.</p>
 </div>
-<div class="section" id="the-builds-index">
-<span id="build-index"></span><h2>The builds index<a class="headerlink" href="#the-builds-index" title="Permalink to this headline">¶</a></h2>
-<p>When users install an application using a URL, Batis looks for an index
-file called <code class="docutils literal"><span class="pre">batis_index.json</span></code>. For example, to let users
-<code class="docutils literal"><span class="pre">batis</span> <span class="pre">install</span> <span class="pre">https://example.com/</span></code>, you would put the index at:</p>
-<div class="highlight-python"><div class="highlight"><pre>https://example.com/batis_index.json
-</pre></div>
-</div>
+<div class="section" id="the-index-file">
+<span id="index-file"></span><h2>The index file<a class="headerlink" href="#the-index-file" title="Permalink to this headline">¶</a></h2>
+<p>Users will install applications by pointing Batis at an index file.
+This is the entry point which describes your application and points to the
+available tarballs.</p>
 <p>The index file must be available over HTTPS. Hosting your website on
 <a class="reference external" href="https://pages.github.com/">Github Pages</a> is one easy and free way to support
 HTTPS.</p>
 <p>The index should be JSON, looking like this:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
   <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;My App&quot;</span><span class="p">,</span>
+  <span class="s">&quot;byline&quot;</span><span class="p">:</span> <span class="s">&quot;Easily frobulate pufoos on demand&quot;</span><span class="p">,</span>
+  <span class="s">&quot;icon_url&quot;</span><span class="p">:</span> <span class="s">&quot;https://example.com/myapp_logo.png&quot;</span><span class="p">,</span>
+  <span class="s">&quot;format_version&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
   <span class="s">&quot;builds&quot;</span><span class="p">:</span> <span class="p">[</span>
     <span class="p">{</span>
       <span class="s">&quot;url&quot;</span><span class="p">:</span> <span class="s">&quot;https://example.com/downloads/myapp_0.1_linux_64bit.app.tar.gz&quot;</span><span class="p">,</span>
@@ -220,7 +234,14 @@ information by running:</p>
 </pre></div>
 </div>
 </div>
-<p>Batis will select an appropriate build for the user&#8217;s system based on the
+<p>The <code class="docutils literal"><span class="pre">name</span></code>, <code class="docutils literal"><span class="pre">byline</span></code> and <code class="docutils literal"><span class="pre">icon_url</span></code> fields are like those inside
+<code class="file docutils literal"><span class="pre">metadata.json</span></code>, except that <code class="docutils literal"><span class="pre">icon_url</span></code> is a URL. These fields are
+duplicated so that installer tools can display information about the application
+before downloading a tarball.</p>
+<p><code class="docutils literal"><span class="pre">format_version</span></code> is <code class="docutils literal"><span class="pre">[1,</span> <span class="pre">0]</span></code> with the details described here. This is for the
+index format, and is not connected to the package format version stored in
+<code class="docutils literal"><span class="pre">metadata.json</span></code>.</p>
+<p>Batis will select an appropriate build for the user&#8217;s system from the <code class="docutils literal"><span class="pre">builds</span></code> array, based on the
 <code class="docutils literal"><span class="pre">kernel</span></code> and <code class="docutils literal"><span class="pre">arch</span></code> fields. These should match the results of <code class="docutils literal"><span class="pre">uname</span> <span class="pre">-s</span></code>
 and <code class="docutils literal"><span class="pre">uname</span> <span class="pre">-m</span></code> respectively, and are not case sensitive. As a special case,
 <code class="docutils literal"><span class="pre">&quot;arch&quot;:</span> <span class="pre">&quot;x86&quot;</span></code> will match <code class="docutils literal"><span class="pre">i386</span></code>, <code class="docutils literal"><span class="pre">i686</span></code>, and any <code class="docutils literal"><span class="pre">i&lt;N&gt;86</span></code>.</p>
@@ -253,30 +274,41 @@ peer-to-peer mechanisms like IPFS or BitTorrent.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Packaging an application using Batis</a><ul>
-<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li><a class="reference internal" href="#the-builds-index">The builds index</a></li>
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/batis-logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">Batis</h2>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install-batis.html">Installing Batis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing applications</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Packaging an application</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-index-file">The index file</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQs</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="whybatis.html" title="previous chapter">Why distribute applications using Batis?</a></li>
-      <li>Next: <a href="whatitsnot.html" title="next chapter">What Batis is not</a></li>
+      <li>Previous: <a href="installing.html" title="previous chapter">Installing applications</a></li>
+      <li>Next: <a href="faq.html" title="next chapter">FAQs</a></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/packaging.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Frequently Asked Questions &mdash; Batis 0.1 documentation</title>
+    <title>FAQs &mdash; Batis 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="Batis 0.1 documentation" href="index.html" />
-    <link rel="prev" title="What Batis is not" href="whatitsnot.html" />
+    <link rel="prev" title="Packaging an application" href="packaging.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -37,10 +37,39 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="frequently-asked-questions">
-<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
-<p>No-one&#8217;s actually asked them yet, but here the answers to some questions you
-might have.</p>
+  <div class="section" id="faqs">
+<h1>FAQs<a class="headerlink" href="#faqs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="security">
+<h2>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h2>
+<p>Batis assumes that the user who installs an application trusts the developer who
+wrote it. It aims to ensure that the software you download is what the real author
+provided, but it doesn&#8217;t check that the author is trustworthy, and it doesn&#8217;t
+sandbox installed applications.</p>
+<p>This is not a great security model, but in practice it&#8217;s one we&#8217;re all used to
+using. I deliberately didn&#8217;t try to do something more secure, because designing
+and implementing a good security model is hard. I don&#8217;t want to promise security
+that I can&#8217;t really provide, and I don&#8217;t want to put developers off by adding
+extra requirements.</p>
+<p>I&#8217;m still thinking about security, and a future version of Batis might integrate
+something like capabilities based security, or a means of calculating reputation.
+There are interesting projects like <a class="reference external" href="http://subuser.org/">Subuser</a> working on
+this. But this is not a priority for me at the moment.</p>
+</div>
+<div class="section" id="why-not-use-linux-distro-packaging">
+<h2>Why not use Linux distro packaging?<a class="headerlink" href="#why-not-use-linux-distro-packaging" title="Permalink to this headline">¶</a></h2>
+<p>Batis packaging for desktop applications is designed to sit alongside distro
+packaging for system components and infrastructure.
+There are two major advantages to using Batis:</p>
+<ul class="simple">
+<li>Users can install an application as soon as the developers release it.
+There&#8217;s no need to wait months and upgrade the entire system at once to get
+the latest software.</li>
+<li>One package works on any distribution, so developers can distribute their
+application without having to learn about several different packaging systems.</li>
+</ul>
+<p>I&#8217;ve <a class="reference external" href="http://takluyver.github.io/posts/why-did-i-write-yet-another-package-manager.html">written more about this</a>
+on my blog.</p>
+</div>
 <div class="section" id="can-i-distribute-proprietary-applications-using-batis">
 <h2>Can I distribute proprietary applications using Batis?<a class="headerlink" href="#can-i-distribute-proprietary-applications-using-batis" title="Permalink to this headline">¶</a></h2>
 <p>Yes. There are no restrictions on what type of application you can distribute.</p>
@@ -74,30 +103,43 @@ in Ancient Greece</li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Frequently Asked Questions</a><ul>
-<li><a class="reference internal" href="#can-i-distribute-proprietary-applications-using-batis">Can I distribute proprietary applications using Batis?</a></li>
-<li><a class="reference internal" href="#where-do-i-upload-packages">Where do I upload packages?</a></li>
-<li><a class="reference internal" href="#batis-the-name">&#8216;Batis&#8217; - The name</a></li>
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/batis-logo.png" alt="Logo"/>
+    
+    <h1 class="logo logo-name">Batis</h2>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install-batis.html">Installing Batis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing.html">Installing applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packaging.html">Packaging an application</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">FAQs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-not-use-linux-distro-packaging">Why not use Linux distro packaging?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#can-i-distribute-proprietary-applications-using-batis">Can I distribute proprietary applications using Batis?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#where-do-i-upload-packages">Where do I upload packages?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#batis-the-name">&#8216;Batis&#8217; - The name</a></li>
 </ul>
 </li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="whatitsnot.html" title="previous chapter">What Batis is not</a></li>
+      <li>Previous: <a href="packaging.html" title="previous chapter">Packaging an application</a></li>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/faq.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">

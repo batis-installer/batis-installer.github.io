@@ -1,11 +1,13 @@
-Packaging an application using Batis
-====================================
+Packaging an application
+========================
 
-.. note::
+.. topic:: Packaging examples
 
-   This describes how to work directly with Batis to distribute an application.
-   I hope that higher level tools will offer simpler ways to do this in the
-   future.
+   There are `example applications <https://batis-installer.github.io/example-apps/>`_
+   showing how to use Batis with popular technologies like Electron or PyQt.
+
+You've got your application running smoothly, and you're ready to invite other
+people to use it. Here's how to package it from scratch using Batis:
 
 1. Prepare a directory containing your built application, so that it can run
    regardless of where the directory is located (i.e. everything inside the
@@ -16,16 +18,26 @@ Packaging an application using Batis
    * :file:`metadata.json` - a JSON object containing information about your
      application, including:
 
-     - ``name`` - the human readable name of your application.
-     - ``byline`` - a very brief description of your application, which may be
-       displayed by installers.
-     - ``icon`` - the relative path to an icon file within your application
-       directory. This may be displayed by graphical installers.
+     - ``name`` and ``byline`` - brief, human readable information about the
+       application, which may be displayed by tools for managing applications.
+     - ``icon_name`` *or* ``icon_file`` - an icon for your application, which tools
+       for managing applications may display. ``icon_name``, which is preferred,
+       identifies an icon from the ``batis_info/icons`` directory described below.
+       ``icon_file`` is a relative path to an icon file within the application
+       directory.
+     - ``index_url`` - the URL of the application's :ref:`index file <index_file>`.
+       Future versions of Batis will use this to look for application updates.
+       Optional but strongly recommended.
      - ``commands`` - list of objects, each with 'name' and 'target' keys.
        ``target``, a path relative to the root of your application directory,
        will be symlinked as ``name`` to a location on :envvar:`PATH`. E.g.::
        
            "commands": [{"target": "bin/launch.sh", "name": "myapp"}]
+    
+     - ``format_version`` - ``[1, 0]`` with the details described in this
+       document. Future releases may increment the second number for backwards
+       compatible changes to the package format, and the first for incompatible
+       changes.
        
    * :file:`dependencies.json` - optional, a JSON object with details about
      external packages that need to be installed for you application. See
@@ -74,12 +86,17 @@ Packaging an application using Batis
    without Batis can easily install your application. Upload the tarball
    somewhere publicly accessible.
 
-5. Prepare a :ref:`build index file <build_index>`, and add it to your project's
-   website as ``/batis_index.json``.
+5. Prepare a :ref:`build index file <index_file>`, and make it accessible on the
+   web over HTTPS.
 
-You can now invite users with Batis to install your application by running::
+You can now invite users with Batis to install your application using a link to
+the index file, replacing ``https://`` with ``batis://``. For instance:
 
-    batis install example.com/myapp/
+.. code-block:: html
+
+    <a href="batis://example.com/myapp/batis_index.json">
+        Click to install
+    </a>
 
 For users without Batis installed, provide links directly to the tarballs, and
 instructions to download, un-tar and run ``./install.sh``.
@@ -140,16 +157,14 @@ will ask the user to ensure the dependencies are installed. It uses the
 If your package doesn't require any system packages, you can leave the
 ``dependencies.json`` file out.
 
-.. _build_index:
+.. _index_file:
 
-The builds index
-----------------
+The index file
+--------------
 
-When users install an application using a URL, Batis looks for an index
-file called ``batis_index.json``. For example, to let users
-``batis install https://example.com/``, you would put the index at::
-
-    https://example.com/batis_index.json
+Users will install applications by pointing Batis at an index file.
+This is the entry point which describes your application and points to the
+available tarballs.
 
 The index file must be available over HTTPS. Hosting your website on
 `Github Pages <https://pages.github.com/>`__ is one easy and free way to support
@@ -159,6 +174,9 @@ The index should be JSON, looking like this::
 
     {
       "name": "My App",
+      "byline": "Easily frobulate pufoos on demand",
+      "icon_url": "https://example.com/myapp_logo.png",
+      "format_version": [1, 0],
       "builds": [
         {
           "url": "https://example.com/downloads/myapp_0.1_linux_64bit.app.tar.gz",
@@ -178,7 +196,16 @@ The index should be JSON, looking like this::
    
        batis verify-index <path_or_url>
 
-Batis will select an appropriate build for the user's system based on the
+The ``name``, ``byline`` and ``icon_url`` fields are like those inside
+:file:`metadata.json`, except that ``icon_url`` is a URL. These fields are
+duplicated so that installer tools can display information about the application
+before downloading a tarball.
+
+``format_version`` is ``[1, 0]`` with the details described here. This is for the
+index format, and is not connected to the package format version stored in
+``metadata.json``.
+
+Batis will select an appropriate build for the user's system from the ``builds`` array, based on the
 ``kernel`` and ``arch`` fields. These should match the results of ``uname -s``
 and ``uname -m`` respectively, and are not case sensitive. As a special case,
 ``"arch": "x86"`` will match ``i386``, ``i686``, and any ``i<N>86``.
